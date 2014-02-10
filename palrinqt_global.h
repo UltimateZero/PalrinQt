@@ -1,0 +1,12 @@
+#ifndef PALRINQT_GLOBAL_H
+#define PALRINQT_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(PALRINQT_LIBRARY)
+#  define PALRINQTSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define PALRINQTSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // PALRINQT_GLOBAL_H

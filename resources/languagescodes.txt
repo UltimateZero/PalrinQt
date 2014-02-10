@@ -1,0 +1,36 @@
+11#Chinese
+30#Dutch
+10#Polish
+28#Indonesian
+13#Italian
+29#Malay
+12#Russian
+17#Portuguese
+37#Portuguese (Brazilian)
+34#Turkish
+14#Arabic
+24#Danish
+25#Finnish
+39#Estonian
+27#Hungarian
+15#Persian
+21#Slovak
+22#Czech
+16#Greek
+19#Japanese
+32#Swedish
+44#Ukrainian
+45#Bulgarian
+42#Latvian
+43#Lithuanian
+35#Vietnamese
+41#Kazakh
+1#English
+33#Thai
+3#German
+4#Spanish
+20#Spanish (Latin American)
+36#Korean
+6#French
+31#Norwegian
+18#Hindi
