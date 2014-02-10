@@ -53,3 +53,6 @@ win32 {
 
 RESOURCES += \
     resources.qrc
+
+OTHER_FILES += \
+    README.md
