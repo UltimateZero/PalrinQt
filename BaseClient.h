@@ -49,6 +49,10 @@ public:
     int getAvatar(const QByteArray &id, int size = 640, bool isGroup = false);
     //
     int getGroupInfo(const QByteArray &group, bool isName = false);
+    //
+    QHash<QString, QVariant> getStoredContactData(const QString &contact_id);
+    QHash<QString, QVariant> getStoredGroupData(const QString &group_id);
+    QHash<QString, QVariant> getStoredSelfData();
 
 
 signals:

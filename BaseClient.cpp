@@ -152,6 +152,21 @@ int BaseClient::getGroupInfo(const QByteArray &group, bool isName)
     return conn->getGroupInfo(group, isName);
 }
 
+QHash<QString, QVariant> BaseClient::getStoredContactData(const QString &contact_id)
+{
+    return contacts[contact_id];
+}
+
+QHash<QString, QVariant> BaseClient::getStoredGroupData(const QString &group_id)
+{
+    return groups[group_id];
+}
+
+QHash<QString, QVariant> BaseClient::getStoredSelfData()
+{
+    return self;
+}
+
 
 
 void BaseClient::connectedToHost()
