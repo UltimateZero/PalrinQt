@@ -31,8 +31,6 @@ ConnectionManager::ConnectionManager(QObject *parent) :
     connect(socket, SIGNAL(readyRead()), this, SLOT(readSocket()));
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(socketStateChanged(QAbstractSocket::SocketState)));
 
-//    startConnection("zerobot@yahoo.com", "iamzero1994");
-
 
 
 }
