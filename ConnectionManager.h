@@ -25,7 +25,7 @@ public:
     int updateOnlineStatus(const QByteArray &online_status);
     int updateDetails(const QMap<QByteArray, QByteArray> &details);
 
-    int sendMessage(int target_type, const QByteArray &target_id, const QByteArray &content_type, QByteArray &data);
+    int sendMessage(int target_type, const QByteArray &target_id, QByteArray content_type, QByteArray data);
 
     int joinGroup(const QByteArray &group_name, const QByteArray &group_pw);
     int leaveGroup(const QByteArray &group_id);
@@ -44,7 +44,7 @@ public:
     int getContactProfile(const QByteArray &contact_id);
     int getAvatar(const QByteArray &id, int size, bool isGroup);
 
-    int sendCustomPacket(PalPacket &packet);
+    int sendCustomPacket(PalPacket packet);
 
 
 
@@ -74,17 +74,17 @@ private slots:
     void socketStateChanged(QAbstractSocket::SocketState);
     void readSocket();
     void writeSocket(const QByteArray &data);
-    int sendPacket(PalPacket &packet);
+    int sendPacket(PalPacket packet);
 
 
 
 private:
-    void handlePacket(PalPacket &packet);
+    void handlePacket(PalPacket packet);
     void sendLOGON();
     void sendBye();
-    void sendAUTH(PalPacket &inpacket);
+    void sendAUTH(PalPacket inpacket);
     int sendMessageBytes(const QByteArray &buffer, const QByteArray &content_type, int total_length, int total_chunks, int chunk_number, int correlation_id, int target_type, const QByteArray &target_id);
-    QByteArray handleAUTH(PalPacket &inpacket);
+    QByteArray handleAUTH(PalPacket inpacket);
 
 
 

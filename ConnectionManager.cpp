@@ -183,7 +183,7 @@ void ConnectionManager::writeSocket(const QByteArray &data)
     socket->waitForBytesWritten();
 }
 
-void ConnectionManager::handlePacket(PalPacket &packet)
+void ConnectionManager::handlePacket(PalPacket packet)
 {
     QByteArray cmd = packet.getCommand();
 
@@ -292,7 +292,7 @@ void ConnectionManager::handlePacket(PalPacket &packet)
 
 }
 
-int ConnectionManager::sendPacket(PalPacket &packet)
+int ConnectionManager::sendPacket(PalPacket packet)
 {
     packet.addHeader("content-length", QByteArray::number(packet.getPayload().size()));
     if(!noMesgId.contains(packet.getCommand()))
@@ -339,7 +339,7 @@ int ConnectionManager::updateDetails(const QMap<QByteArray, QByteArray> &details
     return sendPacket(packet);
 }
 
-int ConnectionManager::sendMessage(int target_type, const QByteArray &target_id, const QByteArray &content_type, QByteArray &data)
+int ConnectionManager::sendMessage(int target_type, const QByteArray &target_id, QByteArray content_type, QByteArray data)
 {
     int correlation_id = -1;
     if(content_type.startsWith("image/"))
@@ -453,7 +453,8 @@ int ConnectionManager::getAvatar(const QByteArray &id, int size, bool isGroup)
     return sendPacket(builder->AvatarPacket(id, size, isGroup));
 }
 
-int ConnectionManager::sendCustomPacket(PalPacket &packet)
+
+int ConnectionManager::sendCustomPacket(PalPacket packet)
 {
     return sendPacket(packet);
 }
@@ -475,7 +476,7 @@ void ConnectionManager::sendBye()
     sendPacket(builder->ByePacket());
 }
 
-void ConnectionManager::sendAUTH(PalPacket &inpacket)
+void ConnectionManager::sendAUTH(PalPacket inpacket)
 {
     sendPacket(builder->AuthPacket(handleAUTH(inpacket), socket->property("online_status").toInt()));
 }
@@ -504,7 +505,7 @@ int ConnectionManager::sendMessageBytes(const QByteArray &buffer, const QByteArr
 
     return sendPacket(packet);
 }
-QByteArray ConnectionManager::handleAUTH(PalPacket &inpacket)
+QByteArray ConnectionManager::handleAUTH(PalPacket inpacket)
 {
     QByteArray payload = inpacket.getPayload();
     QByteArray rnd = inpacket.getHeader("TIMESTAMP").remove(10, 1);

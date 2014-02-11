@@ -61,17 +61,17 @@ void BaseClient::setStoreData(bool storedata)
     config["store_data"] = storedata;
 }
 
-int BaseClient::sendMessage(const QString &id, QString &body, int target_type)
+int BaseClient::sendMessage(const QString &id, QString body, int target_type)
 {
     return conn->sendMessage(target_type, id.toUtf8(), "text/plain", body.toUtf8());
 }
 
-int BaseClient::sendImage(const QString &id, QByteArray &body, int target_type)
+int BaseClient::sendImage(const QString &id, QByteArray body, int target_type)
 {
     return conn->sendMessage(target_type, id.toUtf8(), "image/jpeg", body);
 }
 
-int BaseClient::sendAudio(const QString &id, QByteArray &body, int target_type)
+int BaseClient::sendAudio(const QString &id, QByteArray body, int target_type)
 {
     return conn->sendMessage(target_type, id.toUtf8(), "audio/x-speex", body);
 }
