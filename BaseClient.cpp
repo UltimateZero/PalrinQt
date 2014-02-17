@@ -406,7 +406,7 @@ QList<QByteArray> BaseClient::parseGroups(const QHash<QString, QVariant> &all)
             if(config["store_data"].toBool())
                 updateGroup(group_id, group_data);
             else
-                emit contactDataReceived(group_id, group_data);
+                emit groupDataReceived(group_id, group_data);
         }
     }
     return ids;
