@@ -281,6 +281,7 @@ void ConnectionManager::handlePacket(PalPacket packet)
     else if(cmd == "THROTTLE")
     {
         lastDisconnectionReason = "Sent malformed packets";
+        socket->disconnectFromHost();
     }
     else
     {

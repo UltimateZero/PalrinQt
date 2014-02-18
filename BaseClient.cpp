@@ -61,6 +61,11 @@ void BaseClient::setStoreData(bool storedata)
     config["store_data"] = storedata;
 }
 
+QByteArray BaseClient::getSelfId()
+{
+    return self["sub-id"].toByteArray();
+}
+
 int BaseClient::sendMessage(const QString &id, QString body, int target_type)
 {
     return conn->sendMessage(target_type, id.toUtf8(), "text/plain", body.toUtf8());
@@ -220,11 +225,24 @@ void BaseClient::messageReceived(PalPacket packet)
 
 void BaseClient::groupAdminReceived(PalPacket packet)
 {
+    QByteArray group_id = packet.getHeader("GROUP-ID");
+    QByteArray source_id = packet.getHeader("SOURCE-ID");
+    QByteArray target_id = packet.getHeader("TARGET-ID");
+    QByteArray action = utils->groupAction(packet.getHeader("ACTION"));
 
+    emit groupAdminReceived(group_id, source_id, target_id, action);
 }
 
 void BaseClient::groupUpdateReceived(PalPacket packet)
 {
+    QHash<QString, QVariant> all = DataMapParser::getDataMap(packet.getPayload());
+
+    QByteArray group_id = all["group-id"].toByteArray();
+    QByteArray contact_id = all["contact-id"].toByteArray();
+    int update_type = all["type"].toInt();
+    if(update_type == 0)
+        parseContacts(all);
+    emit groupUpdateReceived(group_id, contact_id, update_type, all["contacts"].toHash());
 
 }
 
@@ -238,6 +256,7 @@ void BaseClient::ownSubProfileReceived(PalPacket packet)
     if(config["store_data"].toBool())
         updateSelf(all);
     emit selfDataReceived(all);
+    self["sub-id"] = all["sub-id"].toByteArray();
     qDebug() << "Self Id:" << self["sub-id"].toByteArray();
 }
 
@@ -268,14 +287,6 @@ void BaseClient::subProfileReceived(PalPacket packet)
     parseGroups(all);
 
     parseAdds(all);
-
-
-
-}
-
-void BaseClient::responseReceived(PalPacket packet)
-{
-
 }
 
 void BaseClient::avatarReceived(PalPacket packet)
@@ -304,6 +315,11 @@ void BaseClient::urlReceived(PalPacket packet)
     {
         emit urlDataReceived(temp.getPayload(), packet.mesgId());
     }
+}
+
+void BaseClient::responseReceived(PalPacket packet)
+{
+
 }
 
 void BaseClient::unknownPacketReceived(PalPacket packet)

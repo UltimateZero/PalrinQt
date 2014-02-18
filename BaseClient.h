@@ -26,6 +26,8 @@ public:
     void setAutoReconnected(bool autoreconnect);
     void setStoreData(bool storedata);
 
+    QByteArray getSelfId();
+
     //
     int sendMessage(const QString &id, QString body, int target_type = 0);
     int sendImage(const QString &id, QByteArray body, int target_type = 0);
@@ -63,6 +65,8 @@ signals:
     void selfDataReceived(const QHash<QString, QVariant> &own_data);
     void contactAddRequestReceived(QString contact_id, const QHash<QString, QVariant> &contact_data);
     void groupDataReceived(QString group_id, const QHash<QString, QVariant> &group_data);
+    void groupUpdateReceived(QString group_id, QString contact_id, int update_type, const QHash<QString, QVariant> &contact_data);
+    void groupAdminReceived(QString group_id, QString source_id, QString target_id, QString action);
     void contactProfileReceived(QHash<QString, QVariant> data, QByteArray id);
     void avatarReceived(QByteArray avatar, int mesg_id);
     void urlDataReceived(QByteArray data, int mesg_id);
