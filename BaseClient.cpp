@@ -61,6 +61,11 @@ void BaseClient::setStoreData(bool storedata)
     config["store_data"] = storedata;
 }
 
+void BaseClient::setPrintCmds(bool print)
+{
+    conn->setPrintCmds(print);
+}
+
 QByteArray BaseClient::getSelfId()
 {
     return self["sub-id"].toByteArray();
@@ -202,7 +207,7 @@ void BaseClient::disconnectedFromHost(bool error, QByteArray reason)
         }
         else
         {
-            emit disconnected("");
+            emit disconnected(reason);
         }
     }
 
@@ -319,12 +324,16 @@ void BaseClient::urlReceived(PalPacket packet)
 
 void BaseClient::responseReceived(PalPacket packet)
 {
+    int type = packet.getHeader("TYPE").toInt();
+    int what = packet.getHeader("WHAT").toInt();
+    int code = packet.getPayload().toHex().toInt(0, 16);
+    qDebug() << "RESPONSE TYPE:" << type << "WHAT:" << what << "CODE:" << code;
 
 }
 
 void BaseClient::unknownPacketReceived(PalPacket packet)
 {
-
+    qDebug() << "Unknown command received:" << packet.getCommand();
 }
 
 

@@ -16,6 +16,8 @@ public:
     explicit ConnectionManager(QObject *parent = 0);
     ~ConnectionManager();
 
+    void setPrintCmds(bool print);
+
     void startConnection(const QByteArray &email, const QByteArray &password, int online_status = 1);
     void disconnectFromHost();
     void sendPing();
@@ -109,17 +111,14 @@ private:
 
 
     //variables
-    bool newAcc;
-    QByteArray captchaKey;
     bool loggedIn;
     bool incorrectLogin;
+    bool printCmds;
     int redirectCount;
     int ps;
     int mesgId;
-    int lastResponseId;
     QByteArray lastDisconnectionReason;
     QByteArray lastPacket;
-    QByteArray pendingPacket;
     //
 
 

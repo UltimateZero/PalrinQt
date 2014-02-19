@@ -19,10 +19,10 @@ ConnectionManager::ConnectionManager(QObject *parent) :
     //
     ps = 0;
     mesgId = 0;
-    lastResponseId = -1;
     redirectCount = 0;
     loggedIn = false;
     incorrectLogin = false;
+    printCmds = true;
     //
 
     connect(socket, SIGNAL(connected()), this, SLOT(socketConnected()));
@@ -40,6 +40,11 @@ ConnectionManager::~ConnectionManager()
     socket->close();
     delete socket;
     delete builder;
+}
+
+void ConnectionManager::setPrintCmds(bool print)
+{
+    printCmds = print;
 }
 
 void ConnectionManager::startConnection(const QByteArray &email, const QByteArray &password, int online_status)
@@ -259,8 +264,6 @@ void ConnectionManager::handlePacket(PalPacket packet)
     else if(cmd == "RESPONSE")
     {
         emit responseReceived(packet);
-        lastResponseId = packet.getHeader("MESG-ID").toInt();
-        qDebug() << "RESPONSE WHAT:" << packet.getHeader("WHAT") << " TYPE:" << packet.getHeader("TYPE") << " CODE:" << packet.getPayload().toHex().toInt(0, 16);
     }
 
     else if(cmd == "AVATAR")
@@ -288,7 +291,7 @@ void ConnectionManager::handlePacket(PalPacket packet)
         emit unknownPacketReceived(packet);
     }
 
-    if(cmd != "P")
+    if(cmd != "P" && printCmds)
         qDebug() << cmd;
 
 }

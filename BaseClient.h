@@ -25,6 +25,7 @@ public:
     void setPassword(const QByteArray &password);
     void setAutoReconnected(bool autoreconnect);
     void setStoreData(bool storedata);
+    void setPrintCmds(bool print);
 
     QByteArray getSelfId();
 
