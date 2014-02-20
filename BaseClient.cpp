@@ -327,7 +327,7 @@ void BaseClient::responseReceived(PalPacket packet)
     int type = packet.getHeader("TYPE").toInt();
     int what = packet.getHeader("WHAT").toInt();
     int code = packet.getPayload().toHex().toInt(0, 16);
-    qDebug() << "RESPONSE TYPE:" << type << "WHAT:" << what << "CODE:" << code;
+    qDebug() << "RESPONSE ID:" << packet.mesgId() << "TYPE:" << type << "WHAT:" << what << "CODE:" << code;
 
 }
 

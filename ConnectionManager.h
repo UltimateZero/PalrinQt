@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QStringList>
+#include <QCoreApplication>
+#include <QTime>
 #include "PalPacket.h"
 #include "PacketBuilder.h"
 
@@ -49,10 +51,6 @@ public:
     int sendCustomPacket(PalPacket packet);
 
 
-
-public:
-
-
 signals:
     void connected();
     void disconnected(bool error, QByteArray reason);
@@ -87,6 +85,7 @@ private:
     void sendAUTH(PalPacket inpacket);
     int sendMessageBytes(const QByteArray &buffer, const QByteArray &content_type, int total_length, int total_chunks, int chunk_number, int correlation_id, int target_type, const QByteArray &target_id);
     QByteArray handleAUTH(PalPacket inpacket);
+    void handleMsgResponse(int id, int code);
 
 
 
@@ -119,8 +118,17 @@ private:
     int mesgId;
     QByteArray lastDisconnectionReason;
     QByteArray lastPacket;
+    QHash<int, QHash<QString, QVariant> > sentMsgs;
+    QHash<int, QList<QByteArray> > beingSent;
     //
 
+
+    void delay()
+    {
+        QTime dieTime= QTime::currentTime().addSecs(1);
+        while( QTime::currentTime() < dieTime )
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    }
 
     void setConstants();
 

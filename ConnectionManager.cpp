@@ -264,6 +264,7 @@ void ConnectionManager::handlePacket(PalPacket packet)
     else if(cmd == "RESPONSE")
     {
         emit responseReceived(packet);
+        handleMsgResponse(packet.mesgId(), packet.getPayload().toHex().toInt(0, 16));
     }
 
     else if(cmd == "AVATAR")
@@ -283,7 +284,7 @@ void ConnectionManager::handlePacket(PalPacket packet)
 
     else if(cmd == "THROTTLE")
     {
-        //TODO: Hmm, not sure how this one works..
+        qDebug() << "THROTTLE FOR" << packet.getHeader("DURATION");
 
 //        lastDisconnectionReason = "Sent malformed packets";
 //        socket->disconnectFromHost();
@@ -357,16 +358,22 @@ int ConnectionManager::sendMessage(int target_type, const QByteArray &target_id,
     if(content_type.startsWith("image/"))
         data = Utils::convertToJpeg(data);
     QList<QByteArray> dataChunks = Utils::getChunks(data, 512);
-    int chunk_number = 0;
+    int chunk_number = 1;
     int currentMesgId = correlation_id;
 
-    foreach(QByteArray chunk, dataChunks)
-    {
-        chunk_number++;
-        currentMesgId = sendMessageBytes(chunk, content_type, data.size(), dataChunks.size(), chunk_number, correlation_id, target_type, target_id);
-        if(chunk_number == 1)
-            correlation_id = currentMesgId;
-    }
+    currentMesgId = sendMessageBytes(dataChunks.first(), content_type, data.size(), dataChunks.size(), chunk_number, correlation_id, target_type, target_id);
+    correlation_id = currentMesgId;
+
+    beingSent[correlation_id] = dataChunks;
+
+    sentMsgs[currentMesgId]["correlationId"] = correlation_id;
+    sentMsgs[currentMesgId]["contentType"] = content_type;
+    sentMsgs[currentMesgId]["totalLength"] = data.size();
+    sentMsgs[currentMesgId]["totalChunks"] = dataChunks.size();
+    sentMsgs[currentMesgId]["targetType"] = target_type;
+    sentMsgs[currentMesgId]["chunkNumber"] = chunk_number+1;
+    sentMsgs[currentMesgId]["targetId"] = target_id;
+    sentMsgs[currentMesgId]["isLast"] = chunk_number == dataChunks.size();
 
     return currentMesgId;
 }
@@ -529,6 +536,49 @@ QByteArray ConnectionManager::handleAUTH(PalPacket inpacket)
     QByteArray result = CryptoManager::salsa20(IV, authKey, dataToEncrypt);
 
     return result;
+}
+
+void ConnectionManager::handleMsgResponse(int id, int code)
+{
+    if(code == 4)
+    {
+        if(!sentMsgs.contains(id))
+            return;
+        if(sentMsgs[id]["isLast"].toBool())
+        {
+            beingSent.remove(sentMsgs[id]["correlationId"].toInt());
+            sentMsgs.remove(id);
+            return;
+        }
+        else
+        {
+            QByteArray contentType = sentMsgs[id]["contentType"].toByteArray();
+            int totalLength = sentMsgs[id]["totalLength"].toInt();
+            int totalChunks = sentMsgs[id]["totalChunks"].toInt();
+            int correlationId = sentMsgs[id]["correlationId"].toInt();
+            int targetType = sentMsgs[id]["targetType"].toInt();
+            int chunkNumber = sentMsgs[id]["chunkNumber"].toInt();
+            QByteArray targetId = sentMsgs[id]["targetId"].toByteArray();
+            QByteArray nextBuffer = beingSent[correlationId][chunkNumber-1];
+
+            if(chunkNumber % 5 == 0)
+                delay();
+
+            int newId = sendMessageBytes(nextBuffer, contentType, totalLength, totalChunks, chunkNumber, correlationId, targetType, targetId);
+
+            sentMsgs[newId] = sentMsgs[id];
+            sentMsgs.remove(id);
+            sentMsgs[newId]["chunkNumber"] = chunkNumber+1;
+            sentMsgs[newId]["isLast"] = chunkNumber == totalChunks;
+        }
+
+
+
+    }
+    else
+    {
+        qDebug() << "Failed to send message" << id << code;
+    }
 }
 
 
