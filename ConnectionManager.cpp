@@ -283,15 +283,23 @@ void ConnectionManager::handlePacket(PalPacket packet)
 
     else if(cmd == "THROTTLE")
     {
-        lastDisconnectionReason = "Sent malformed packets";
-        socket->disconnectFromHost();
+        //TODO: Hmm, not sure how this one works..
+
+//        lastDisconnectionReason = "Sent malformed packets";
+//        socket->disconnectFromHost();
     }
+
+    else if(cmd == "BALANCE QUERY RESULT")
+    {
+        //emit this
+    }
+
     else
     {
         emit unknownPacketReceived(packet);
     }
 
-    if(cmd != "P" && printCmds)
+    if(cmd != "P" && printCmds == true)
         qDebug() << cmd;
 
 }

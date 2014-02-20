@@ -187,27 +187,20 @@ QStringList Utils::getPrivileges(int priv)
     QStringList privs;
     bool isStaff = priv & 0x1000;
     bool isVip = priv & 0x200000;
+    bool isAgent = priv & 0x10000000;
+    bool isPremium = priv & 0x100000;
+    bool isPest = priv & 0x40000;
 
     if(isStaff)
         privs << "Staff";
-    else if(isVip)
+    if(isVip)
         privs << "VIP";
-    else if( (!isStaff && !isVip) || ( (priv & 0x40000) == 0) )
-    {
-        if(priv & 0x10000000)
-            privs << "Agent";
-        else
-        {
-            if(priv & 0x100000)
-                privs << "Premium";
-            else
-                privs << "Normal";
-        }
-    }
-    else
-    {
+    if(isAgent)
+        privs << "Agent";
+    if(isPremium)
+        privs << "Premium";
+    if(isPest)
         privs << "Pest";
-    }
 
     return privs;
 }
