@@ -9,6 +9,7 @@
 CryptoManager::CryptoManager(QObject *parent) :
     QObject(parent)
 {
+    //
 }
 
 
