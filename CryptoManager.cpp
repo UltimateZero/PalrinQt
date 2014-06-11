@@ -31,20 +31,19 @@ string CryptoManager::zlibUncompress(string data)
 
 QByteArray CryptoManager::salsa20(QByteArray IV, QByteArray KEY, QByteArray DATA)
 {
-    //pl("crypt-> encrypting to salsa20",1);
+    //Thanks Raven xD
 
-    //set up encryption
     Salsa20::Encryption enc;
 
     enc.SetKeyWithIV((byte*)KEY.constData(), KEY.length(), (byte*)IV.constData());
 
-    //create and move data to buffer
+
     string ENC = "";
     StreamTransformationFilter stf( enc, new StringSink( ENC ) );
     stf.Put( (byte*)DATA.constData(), DATA.length() );
     stf.MessageEnd();
 
-    //return buffer
+
     return QByteArray(ENC.c_str(), ENC.length());
 }
 

@@ -86,7 +86,7 @@ void ConnectionManager::socketError(QAbstractSocket::SocketError error)
 
 void ConnectionManager::socketStateChanged(QAbstractSocket::SocketState)
 {
-
+ //
 }
 
 void ConnectionManager::readSocket()
@@ -285,9 +285,7 @@ void ConnectionManager::handlePacket(PalPacket packet)
     else if(cmd == "THROTTLE")
     {
         qDebug() << "THROTTLE FOR" << packet.getHeader("DURATION");
-
-//        lastDisconnectionReason = "Sent malformed packets";
-//        socket->disconnectFromHost();
+        //TODO: Add a handler? Or just leave it as it is?
     }
 
     else if(cmd == "BALANCE QUERY RESULT")
