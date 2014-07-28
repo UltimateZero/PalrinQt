@@ -31,6 +31,7 @@ public:
 
     //
     int sendMessage(const QString &id, QString body, int target_type = 0);
+    int sendMessage(const QString &id, QByteArray body, int target_type = 0);
     int sendImage(const QString &id, QByteArray body, int target_type = 0);
     int sendAudio(const QString &id, QByteArray body, int target_type = 0);
     //

@@ -76,6 +76,11 @@ int BaseClient::sendMessage(const QString &id, QString body, int target_type)
     return conn->sendMessage(target_type, id.toUtf8(), "text/plain", body.toUtf8());
 }
 
+int BaseClient::sendMessage(const QString &id, QByteArray body, int target_type)
+{
+    return conn->sendMessage(target_type, id.toUtf8(), "text/plain", body);
+}
+
 int BaseClient::sendImage(const QString &id, QByteArray body, int target_type)
 {
     return conn->sendMessage(target_type, id.toUtf8(), "image/jpeg", body);
